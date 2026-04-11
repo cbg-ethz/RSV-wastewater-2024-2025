@@ -1,0 +1,26 @@
+{
+    "id": "4EDB844F",
+    "path": "~/Documents/GitHub/RSV-wastewater-2024-2025/utilities/swiss-map/R/RSV_swiss_map.R",
+    "project_path": "R/RSV_swiss_map.R",
+    "type": "r_source",
+    "hash": "3753723383",
+    "contents": "",
+    "dirty": false,
+    "created": 1773491608130.0,
+    "source_on_save": false,
+    "relative_order": 1,
+    "properties": {
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "44,20",
+        "scrollLine": "43"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1773522750,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1773522750858,
+    "read_only": false,
+    "read_only_alternatives": []
+}

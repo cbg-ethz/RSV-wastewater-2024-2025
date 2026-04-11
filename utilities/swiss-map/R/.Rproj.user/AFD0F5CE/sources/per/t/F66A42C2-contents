@@ -1,0 +1,106 @@
+library(sf)
+library(ggplot2)
+library(ggspatial)
+library(tidyverse)
+library(data.table)
+library(patchwork)
+
+source('R/load_spatial_data.R')
+source('R/setup.R')
+
+
+catchments = load_catchments()
+catchments = st_transform(catchments, 25830)
+
+catchment_names = fread('data/ara_name_id_list.csv')
+
+catchments = merge(catchments, catchment_names, by = c('ara_id'))
+
+
+lakes = load_lakes()
+
+canton_boundaries = st_read('data/spatial/swissboundaries3d_2023-01_2056_5728.shp/swissBOUNDARIES3D_1_4_TLM_KANTONSGEBIET.shp')
+
+catchements_eawag = catchments %>% filter(ara_id %in% current_aras) 
+
+ggplot() + 
+  geom_sf(data=lakes, fill='skyblue', color=NA)+
+  #geom_sf(data = st_simplify(swiss_rail_trimmed$osm_lines,dTolerance = 100, preserveTopology = F),
+  #        inherit.aes = FALSE,
+  #        color = "red",
+  #        size = 1, alpha=0.5) + 
+  #geom_sf(data = st_simplify(swiss_motoway_trimmed$osm_lines,dTolerance = 100, preserveTopology = F),
+  #        inherit.aes = FALSE,
+  #        color = "red",
+  #        size = 1, alpha=0.5) + 
+  geom_sf(data=canton_boundaries, fill=NA, color='darkgrey') + 
+  geom_sf(data=catchements_eawag, aes(fill=ara_name), color=NA)+ 
+  
+  geom_sf(data=city_locs, color='black', size=3)+
+  geom_sf(data=city_locs, color='white', size=1.8)+
+  geom_sf_text(data = city_locs, aes(label = name_of_city), nudge_x=20000, nudge_y=10000)+
+
+  scale_fill_discrete(name='WWTP Name')+
+  theme_minimal()+ 
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank())
+
+ggsave('plots/catchments_simple.pdf')
+
+
+catchements_old = catchments %>% filter(ara_id %in% old_aras) 
+
+catchements_old = catchements_old %>% mutate(ara_name_full = old_ara_official_names)
+
+catchements_new = catchments %>% filter(ara_id %in% setdiff(current_aras, old_aras))
+
+catch_w_cities = 
+  #ggmap(swiss_map) + 
+  ggplot() + 
+  geom_sf(data=lakes, fill='skyblue', color=NA)+
+  geom_sf(data=canton_boundaries, fill=NA, color='darkgrey') + 
+  geom_sf(data=city_locs, color='black', size=3, alpha=1)+
+  geom_sf(data=city_locs, color='white', size=1.8, alpha=1)+
+  geom_sf(data=catchements_old, aes(fill=ara_name_full), color=NA, alpha=0.5)+ 
+
+  geom_sf_text(data = city_locs, aes(label = name_of_city), nudge_x=10000, nudge_y=8000, size=3)+
+  
+  scale_fill_discrete(name='WWTP')+
+  xlab('')+
+  ylab('')+
+  theme_minimal()+ 
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank())
+
+saveRDS(catch_w_cities, 'catch_w_cities.rds')
+
+ggsave('plots/catchments_wcities_oldaras.pdf')
+
+ggplot() + 
+  geom_sf(data=lakes, fill='skyblue', color=NA)+
+  geom_sf(data=canton_boundaries, fill=NA, color='darkgrey') + 
+  geom_sf_pattern(data=catchements_new, aes(fill=ara_name, pattern_fill=ara_name), color=NA, pattern='stripe',pattern_density = 0.01, pattern_spacing=0.01, pattern_alpha =0.5, pattern_color='white')+ 
+  geom_sf(data=catchements_old, aes(fill=ara_name), color=NA)+ 
+  scale_fill_discrete(name='WWTP Name')+
+  scale_pattern_fill_discrete(guide = FALSE)+
+  theme_minimal()+ 
+  theme(
+    axis.text.x = element_blank(),
+    axis.text.y = element_blank(),
+    axis.ticks = element_blank(),
+    panel.grid.major = element_blank(), 
+    panel.grid.minor = element_blank())
+
+ggsave('plots/catchments_simple_new_and_old.pdf')
+ggsave('plots/catchments_simple_new_and_old.png')
+
+
+

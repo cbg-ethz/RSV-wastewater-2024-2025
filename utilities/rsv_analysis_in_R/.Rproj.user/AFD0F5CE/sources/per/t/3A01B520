@@ -1,0 +1,27 @@
+{
+    "id": "3A01B520",
+    "path": "~/Documents/GitHub/RSV-wastewater-2024-2025/utilities/rsv_analysis_in_R/RSVB_conc_coverage_corr.R",
+    "project_path": "RSVB_conc_coverage_corr.R",
+    "type": "r_source",
+    "hash": "3359248805",
+    "contents": "",
+    "dirty": false,
+    "created": 1773493423444.0,
+    "source_on_save": false,
+    "relative_order": 4,
+    "properties": {
+        "tempName": "Untitled1",
+        "source_window_id": "",
+        "Source": "Source",
+        "cursorPosition": "260,38",
+        "scrollLine": "237"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1773511486,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1773511486676,
+    "read_only": false,
+    "read_only_alternatives": []
+}
