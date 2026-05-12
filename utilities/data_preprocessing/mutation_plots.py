@@ -411,7 +411,7 @@ def plot_mean_frequencies(dataframe, clinical_swiss, clinical_eu, safe_path, sub
         .reindex(ww_cols, fill_value=0)  # align to ww columns
         .to_frame().T
     )
-    mean_clinical_swiss.index = ['clinical swiss 24/25']
+    mean_clinical_swiss.index = ['clinical Swiss 24/25']
     # Convert clinical EU mutation frequencies to aligned DataFrame
     mean_clinical_eu = (
         clinical_eu_filtered
@@ -420,7 +420,7 @@ def plot_mean_frequencies(dataframe, clinical_swiss, clinical_eu, safe_path, sub
         .reindex(ww_cols, fill_value=0)
         .to_frame().T
     )
-    mean_clinical_eu.index = ['clinical eu 24/25']
+    mean_clinical_eu.index = ['clinical EU 24/25']
 
     # Combine everything together
     combined_df = pd.concat([mean_freq_df_sorted, mean_clinical_swiss, mean_clinical_eu], axis=0)

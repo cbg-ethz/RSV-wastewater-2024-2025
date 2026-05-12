@@ -3,9 +3,7 @@ import numpy as np
 import re
 import json
 
-# low-frequency polymorphism metric parameters
-MINOR_ALLELE_FREQUENCY = 0.0
-MAJOR_ALLELE_FREQUENCY = 0.05
+
 # other metrics parameters
 MINOR_MUTATION_FREQUENCY = 0.0
 COVERAGE_THRESHOLD = 10
@@ -28,26 +26,7 @@ def list_polymorphic_sites(df_mutations, minor_mutation_frequency=MINOR_MUTATION
     variant_positions = df_temp["position"].unique()
     return variant_positions
 
-def position_Shannon_entropy(df_mutations, position):
-    df_temp = df_mutations[df_mutations["position"] == position]
-    position_shannon = 0
-    sum_fraction = 0
-    var_shannon = df_temp["frequency"].apply(lambda x: x * np.log(x) if x > 0 else 0)
 
-    sum_fraction = df_temp["frequency"].sum()
-    position_shannon = var_shannon.sum()
-
-    # add the reference base summand
-    if 1 - sum_fraction > 0:
-        position_shannon += (1 - sum_fraction) * np.log(1 - sum_fraction)
-
-    return -position_shannon
-
-def mean_pos_Shannon_entropy(df_mutations, length):
-    entropy = 0
-    for position_temp in list_polymorphic_sites(df_mutations):
-        entropy += position_Shannon_entropy(df_mutations, position_temp)
-    return entropy / length if length > 0 else np.nan
 
 def nucleotide_diversity(df_mutations, length, cov):
 
@@ -76,16 +55,6 @@ def richness(df_mutations, length, minor_mutation_frequency=MINOR_MUTATION_FREQU
     # number of polymorphisms per kilobase (1000 bases)
     return (len(variant_positions) / length * 1000 if length > 0 else np.nan)
 
-def number_of_low_freq_polymorphisms(df_mutations,
-                                     length,
-                                     minor_allele_frequency=MINOR_ALLELE_FREQUENCY,
-                                     major_allele_frequency=MAJOR_ALLELE_FREQUENCY):
-    df_temp = df_mutations[df_mutations["frequency"] > minor_allele_frequency]
-    df_temp = df_temp[df_temp["frequency"] <= major_allele_frequency]
-
-    variant_positions = df_temp["position"].unique()
-    # number of polymorphisms per kilobase
-    return (len(variant_positions) / length * 1000 if length > 0 else np.nan)
 
 
 def get_names(location_en):
@@ -160,8 +129,7 @@ def main(path_to_data, figname, total_coverage, ref, threshold=COVERAGE_THRESHOL
 
             nuc_div_gene = nucleotide_diversity(sample_gene, length=covered_gene, cov=coverage_gene)
             rich_gene = richness(sample_gene, length=covered_gene)
-            rich_gene_min = number_of_low_freq_polymorphisms(sample_gene, length=covered_gene)
-            mean_entropy_gene = mean_pos_Shannon_entropy(sample_gene, length=covered_gene)
+
             proportion_covered_gene = covered_gene / (gene_end - gene_start + 1)
 
 
@@ -175,12 +143,10 @@ def main(path_to_data, figname, total_coverage, ref, threshold=COVERAGE_THRESHOL
                  "location": location,
                  "subtype": ref,
                  "genome_region": gene_name,
-                 "entropy": mean_entropy_gene,
                  "nuc_diversity": nuc_div_gene,
                  "covered_part": proportion_covered_gene,
                  "mean_pos_coverage": mean_coverage_gene,
-                 "richness": rich_gene,
-                 "low_freq_polymorphisms": rich_gene_min
+                 "richness": rich_gene
                  }
             ])
 
