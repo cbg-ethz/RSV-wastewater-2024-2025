@@ -6,3 +6,7 @@ We tracked RSV subtypes and individual mutations across the 2024-2025 peak seaso
 
 The bioinformatics processing pipeline used for this study can be accessed here: [RSV-wastewater-V-pipe](https://github.com/cbg-ethz/RSV-wastewater-V-pipe/)
 
+## Reference
+If you use this repository in your research, please cite:
+**Tracking Respiratory Syncytial Virus dynamics in wastewater during the 2024-2025 season in Switzerland**.
+Auguste Rimaite, Jolinda de Korne-Elenbaas, Adrian Lison, Tanja Stadler, Timothy R. Julian, Niko Beerenwinkel.
