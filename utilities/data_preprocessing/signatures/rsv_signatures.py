@@ -1,15 +1,9 @@
-import re
-import pandas as pd
-import seaborn as sns
-import numpy as np
-import matplotlib.pylab as plt
-import argparse
 import requests
 import json
 
 # To call mutation lineage-defining I set threshold of frequency at 0.9 (default).
-proportion = 0.90
-accession_date="20251015"
+proportion = 0.90 # min proportion for the mutation to be included as a signature should be saved in the created file name
+accession_date="20251015" #date of accession should be saved in the created file name
 # """
 # Extract RSV-B clades definitions
 # """
@@ -55,7 +49,7 @@ file_path = f"../../../RSV/resources/lineage_definitions/RSVB_nucleotide_mutatio
 with open(file_path, 'w') as file:
     json.dump(clades_definitions, file, indent=4)
 
-
+####################################################################################
 clades = [
     "A.D.1",
     "A.D.3",

@@ -74,7 +74,7 @@ def parse_mutations(s):
     return {k: (float(v) if v is not None else np.nan) for k, v in json.loads(s).items()}
 
 
-def main(path_to_data, figname, total_coverage, ref, threshold=COVERAGE_THRESHOLD):
+def main(path_to_data, filename, total_coverage, ref, threshold=COVERAGE_THRESHOLD):
 
     coverage = pd.read_csv(filepath_or_buffer=total_coverage)
     coverage['location'] = coverage['sample'].str.split('_').str[1]
@@ -156,7 +156,7 @@ def main(path_to_data, figname, total_coverage, ref, threshold=COVERAGE_THRESHOL
     # Save results to CSV
     results_saving = pd.DataFrame(results)
 
-    results_saving.to_csv(f'{figname}_genetic_diversity.csv')
+    results_saving.to_csv(f'{filename}_genetic_diversity.csv')
 
 if __name__ == "__main__":
 
@@ -164,9 +164,9 @@ if __name__ == "__main__":
     main(path_to_data="../../RSV_results/data_analysis/data/RSVA_2024_2025/genetic_diversity/timeline_mutation_EPI_ISL_412866_GEN_DIV.tsv",
         ref='RSV-A',
         total_coverage="../../RSV_results/data_analysis/data/RSVA_2024_2025/coverage/collected_rsv_coverage_all_2024_2025_EPI_ISL_412866.tsv",
-        figname="../../RSV_results/data_analysis/results/RSVA_2024_2025/genetic_diversity/Switzerland-RSV-A-2024-2025")
+        filename="../../RSV_results/data_analysis/results/RSVA_2024_2025/genetic_diversity/Switzerland-RSV-A-2024-2025")
 
     main(path_to_data="../../RSV_results/data_analysis/data/RSVB_2024_2025/genetic_diversity/timeline_mutation_EPI_ISL_1653999_GEN_DIV.tsv",
         ref='RSV-B',
         total_coverage="../../RSV_results/data_analysis/data/RSVB_2024_2025/coverage/collected_rsv_coverage_all_2024_2025_EPI_ISL_1653999.tsv",
-        figname="../../RSV_results/data_analysis/results/RSVB_2024_2025/genetic_diversity/Switzerland-RSV-B-2024-2025")
+        filename="../../RSV_results/data_analysis/results/RSVB_2024_2025/genetic_diversity/Switzerland-RSV-B-2024-2025")
