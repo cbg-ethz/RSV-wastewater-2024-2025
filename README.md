@@ -2,3 +2,7 @@ This repository contains computational analysis code used in the manuscript *Tra
 ## Summary
 We tracked RSV subtypes and individual mutations across the 2024-2025 peak season in six Swiss cities. RSV-A and RSV-B co-circulated nationwide, and both exhibited similar epidemiological dynamics estimated from their subtype-specific effective reproduction numbers. No previously reported F protein mutations relevant to prophylaxis efficacy were identified. Genetic diversity analysis of wastewater-derived sequences reflected patterns previously reported in clinical data, with higher diversity in RSV-A than RSV-B and greater variability in the G compared to the F gene. These findings demonstrate the potential of wastewater-based RSV surveillance for monitoring RSV dynamics and diversity and establish a national baseline for RSV evolution during the first season following vaccine implementation in Switzerland.
 
+## Bioinformatics Pipeline
+
+The bioinformatics processing pipeline used for this study can be accessed here: [RSV-wastewater-V-pipe](https://github.com/cbg-ethz/RSV-wastewater-V-pipe/)
+
