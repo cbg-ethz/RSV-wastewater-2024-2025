@@ -5,6 +5,7 @@ node_modules/
 # Python
 __pycache__/
 *.pyc
+.idea/
 
 # Logs
 *.log
@@ -16,3 +17,4 @@ Thumbs.db
 # Build output
 dist/
 build/
+.Rproj.user
