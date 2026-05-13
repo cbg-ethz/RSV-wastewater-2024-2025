@@ -27,4 +27,4 @@ Digital PCR data of viral concentration in wastewater is available for download 
 ## Reference
 If you use this repository in your research, please cite:
 > **Tracking Respiratory Syncytial Virus dynamics in wastewater during the 2024-2025 season in Switzerland**.
-Auguste Rimaite, Jolinda de Korne-Elenbaas, Adrian Lison, Tanja Stadler, Timothy R. Julian, Niko Beerenwinkel; 2026, MedRxiv.
+Auguste Rimaite, Jolinda de Korne-Elenbaas, Adrian Lison, Tanja Stadler, Timothy R. Julian, Niko Beerenwinkel; MedRxiv, 2026.

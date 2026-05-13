@@ -18,3 +18,12 @@ Thumbs.db
 dist/
 build/
 .Rproj.user
+
+# RStudio
+.Rproj.user/
+
+# R history
+.Rhistory
+
+# Jupyter
+.ipynb_checkpoints/
