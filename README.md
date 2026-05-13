@@ -5,6 +5,10 @@ We tracked RSV subtypes and individual mutations across the 2024-2025 peak seaso
 ## Bioinformatics Pipeline
 
 The bioinformatics processing pipeline used for this study can be accessed here: [RSV-wastewater-V-pipe](https://github.com/cbg-ethz/RSV-wastewater-V-pipe/)
+Samples used in the study: `/RSV_results/data_analysis/data/samples_tsv`
+
+## Data availability
+Digital PCR data of viral concentration in wastewater is available for download from wise.ethz.ch. Wastewater sequencing data used in this study is available on ENA under project number PRJEB85524.
 
 ## Reference
 If you use this repository in your research, please cite:
