@@ -7,7 +7,19 @@ We tracked RSV subtypes and individual mutations across the 2024-2025 peak seaso
 The bioinformatics processing pipeline (RSV references and V-pipe configuration files) used for this study can be accessed here: [RSV-wastewater-V-pipe](https://github.com/cbg-ethz/RSV-wastewater-V-pipe/)
 
 
-Samples used in the study: `/RSV_results/data_analysis/data/samples_tsv`
+Samples and metadata used in the study: `/RSV_results/data_analysis/data/samples_tsv`
+
+Figures in the preprint:
+
+Coverage vs concentration: `/RSV_results/data_analysis/results/RSV{A/B}_2024_2025/coverage`
+
+Mutation frequencies: `/RSV_results/data_analysis/results/RSV{A/B}_2024_2025/mutations`
+
+Relative abundances: `/RSV_results/data_analysis/results/RSV{A/B}_2024_2025/relative_abundances`
+
+Relative abundances - stacked area plot: `/RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsva_rsvb`
+
+
 
 ## Data availability
 Digital PCR data of viral concentration in wastewater is available for download from wise.ethz.ch. Wastewater sequencing data used in this study is/will be made available on ENA under project number PRJEB85524.
@@ -15,4 +27,4 @@ Digital PCR data of viral concentration in wastewater is available for download 
 ## Reference
 If you use this repository in your research, please cite:
 > **Tracking Respiratory Syncytial Virus dynamics in wastewater during the 2024-2025 season in Switzerland**.
-Auguste Rimaite, Jolinda de Korne-Elenbaas, Adrian Lison, Tanja Stadler, Timothy R. Julian, Niko Beerenwinkel.
+Auguste Rimaite, Jolinda de Korne-Elenbaas, Adrian Lison, Tanja Stadler, Timothy R. Julian, Niko Beerenwinkel; 2026, MedRxiv.
