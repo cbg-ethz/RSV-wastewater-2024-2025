@@ -10,7 +10,7 @@ The bioinformatics processing pipeline used for this study can be accessed here:
 Samples used in the study: `/RSV_results/data_analysis/data/samples_tsv`
 
 ## Data availability
-Digital PCR data of viral concentration in wastewater is available for download from wise.ethz.ch. Wastewater sequencing data used in this study is available on ENA under project number PRJEB85524.
+Digital PCR data of viral concentration in wastewater is available for download from wise.ethz.ch. Wastewater sequencing data used in this study is/will be made available on ENA under project number PRJEB85524.
 
 ## Reference
 If you use this repository in your research, please cite:
