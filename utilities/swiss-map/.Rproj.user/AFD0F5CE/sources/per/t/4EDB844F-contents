@@ -191,7 +191,7 @@ legend_df <- data.frame(
 plot <- ggplot() +
   
   # Base map layers
-  geom_sf(data = canton_boundaries, fill = NA, linewidth = 0.3, color= "grey") +
+  geom_sf(data = canton_boundaries, fill = NA, linewidth = 0.3, color= "grey70") +
   geom_sf(data = catch_poly_sites, fill = NA, linewidth = 0.3, color= "gray42") +
   
   # Draw cake charts
@@ -251,7 +251,7 @@ plot <- ggplot() +
     legend.title = element_text(size = 14)
   )
 
-#ggsave('RSV_plot_cake.pdf')
+ggsave('RSV_plot_cake_conference.pdf')
 
 print(plot)
 

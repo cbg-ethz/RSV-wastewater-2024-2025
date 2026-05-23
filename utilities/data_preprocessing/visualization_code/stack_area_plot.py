@@ -3,13 +3,12 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
 import matplotlib.ticker as ticker
-import matplotlib.dates as mdates
-from matplotlib.font_manager import FontProperties
 
 
 # Assuming data is stored as a multi-line string or loaded from a CSV file
 df_A = pd.read_csv('../../RSV/data_analysis/results/RSVA_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
 df_B = pd.read_csv('../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
+#using smoothed concentration values (if sample was not subtyped for a sample, using smoothed value basedon neighbouring values)
 viral_loads_2024_2025 = pd.read_csv("/Users/arimaite/Documents/GitHub/combined_virus_sequencing/RSV/data_analysis/data/concentrations/rsv_ab_assay/viral_loads_imputated_rsvab.csv",
                                    usecols=['location', 'Date', 'RSV_A_imputed', 'RSV_B_imputed'])
 

@@ -67,7 +67,8 @@ normalized_load_subtypes <- normalized_load_subtypes[normalized_load_subtypes$lo
 
 
 # ---------------- imputing missing RSV-AB normalized loads values if sample is sequenced but not sub-typed --------------
-
+## these values are used for stacked plots of lineage relative abundances 
+## scaled by subtype concentrations (imputed values are needed for the days with missing subtyping information)
 # for each location
 
 for (i in 1:nrow(samples)){
@@ -143,7 +144,7 @@ normalized_load_subtypes_imputed <- normalized_load_subtypes_imputed %>%
   )) %>% ungroup()
 
 
-
+# estimate proportions
 normalized_load_subtypes_imputed <- normalized_load_subtypes_imputed %>%
   rename("RSV_A" = "RSV-A") %>%
   rename("RSV_B" = "RSV-B") %>% 
