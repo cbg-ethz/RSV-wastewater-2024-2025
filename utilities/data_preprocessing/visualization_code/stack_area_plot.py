@@ -6,8 +6,8 @@ import matplotlib.ticker as ticker
 
 
 # Assuming data is stored as a multi-line string or loaded from a CSV file
-df_A = pd.read_csv('../../RSV/data_analysis/results/RSVA_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
-df_B = pd.read_csv('../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
+df_A = pd.read_csv('../../../RSV_results/data_analysis/results/RSVA_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
+df_B = pd.read_csv('../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
 #using smoothed concentration values (if sample was not subtyped for a sample, using smoothed value basedon neighbouring values)
 viral_loads_2024_2025 = pd.read_csv("/Users/arimaite/Documents/GitHub/combined_virus_sequencing/RSV/data_analysis/data/concentrations/rsv_ab_assay/viral_loads_imputated_rsvab.csv",
                                    usecols=['location', 'Date', 'RSV_A_imputed', 'RSV_B_imputed'])
@@ -96,17 +96,10 @@ def plot_stacked_area_chart(df_A, df_B, location, filename, viral_loads):
     df_merged['dropout_RSVA'] = np.where(df_merged[rsva_variants].isna().any(axis=1), 1, 0)
     df_merged['dropout_RSVB'] = np.where(df_merged[rsvb_variants].isna().any(axis=1), 1, 0)
     df_merged = df_merged.set_index('Date')
-    #print(df_merged.shape)
-    #print(df_merged.columns)
+
     data_rsv_viral_loads_RSV_prepared = prep_viral_loads(viral_loads_2024_2025_RSV_assay, location)
-    #data_rsv_viral_loads_RSVB = prep_viral_loads(viral_loads_2024_2025_RSV_B, location)
 
-    # extract only viral load values for the dates where deconvolution results exist
-    #data_rsv_viral_loads_RSVA = data_rsv_viral_loads_RSVA.loc[data_rsv_viral_loads_RSVA['Date'].isin(df_merged.index)]
-    #data_rsv_viral_loads_RSVB = data_rsv_viral_loads_RSVB.loc[data_rsv_viral_loads_RSVB['Date'].isin(df_merged.index)]
-
-    # extract only deconvolution values for the dates where subtype-specific viral loads exist (i.e. subtyping was done)
-    # TODO: interpolate concentration values where subtype-specific concentration was not measured -> DONE
+    # Where subtype-specific concentration was not measured (only sequencing data) subtype concentration values were interpolated from neighbouring samples.
     df_merged = df_merged.loc[df_merged.index.isin(data_rsv_viral_loads_RSV_prepared['Date'])]
 
 
@@ -114,8 +107,6 @@ def plot_stacked_area_chart(df_A, df_B, location, filename, viral_loads):
     df_merged_old = df_merged
 
     df_merged = pd.merge(df_merged_old, data_rsv_viral_loads_RSV_prepared, 'outer', on='Date')
-
-
 
     df_merged = df_merged.iloc[:, :-4]
 
@@ -166,27 +157,8 @@ def plot_stacked_area_chart(df_A, df_B, location, filename, viral_loads):
     fig, ax = plt.subplots(figsize=(10, 10))  # Adjust figure size for better readability
     #
     areas = df_stack_merged.T.values
-    # #areas2 = df_filtered_new_stacked_area_RSVB.T.values
-    # #x_vals = pd.to_datetime(df_filtered_new_stacked_area_RSVA.index) # df_filtered_new_stacked_area_RSVA
-    #
-    # # First group
-    # #plot1 = ax.stackplot(x_vals, areas1, colors=[...], alpha=0.7)
-    #
-    # # Draw thick line between groups
-    # #y_max = df_filtered_new_stacked_area_RSVA.sum(axis=1).values
-    # #ax.plot(x_vals, y_max, color='black', linewidth=3)
-    #
-    # # Second group stacked on top
-    # plot2 = ax.stackplot(df_merged.index, areas1,  alpha=0.7)
-    #
-    #
-    # plt.show()
-    #
-    # Create the figure and axis
-    # Plot the stackplot
 
 
-    #print("labels:", df_stack_merged.columns)
     ax.stackplot(
         pd.to_datetime(df_stack_merged.index),  # x-axis values
         areas,                   # y-axis areas
@@ -242,31 +214,31 @@ def plot_stacked_area_chart(df_A, df_B, location, filename, viral_loads):
 plot_stacked_area_chart(df_A,
                         df_B,
                        location="Geneva",
-                       filename="../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/total_geneve_variants_over_time_stacked_area.pdf",
+                       filename="../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/total_geneve_variants_over_time_stacked_area.pdf",
                        viral_loads=viral_loads_2024_2025)
 
 plot_stacked_area_chart(df_A,
                         df_B,
                        location="Zurich",
-                       filename="../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/total_zurich_variants_over_time_stacked_area.pdf",
+                       filename="../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/total_zurich_variants_over_time_stacked_area.pdf",
                        viral_loads=viral_loads_2024_2025)
 plot_stacked_area_chart(df_A,
                         df_B,
                        location="Chur",
-                       filename="../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/total_rsvb_chur_variants_over_time_stacked_area.pdf",
+                       filename="../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/total_chur_variants_over_time_stacked_area.pdf",
                        viral_loads=viral_loads_2024_2025)
 plot_stacked_area_chart(df_A,
                         df_B,
                        location="Basel",
-                       filename="../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/total_rsvb_basel_variants_over_time_stacked_area.pdf",
+                       filename="../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/total_basel_variants_over_time_stacked_area.pdf",
                        viral_loads=viral_loads_2024_2025)
 plot_stacked_area_chart(df_A,
                         df_B,
                        location="Lugano",
-                       filename="../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/total_rsvb_lugano_variants_over_time_stacked_area.pdf",
+                       filename="../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/total_lugano_variants_over_time_stacked_area.pdf",
                        viral_loads=viral_loads_2024_2025)
 plot_stacked_area_chart(df_A,
                         df_B,
                        location="Laupen",
-                       filename="../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/total_rsvb_laupen_variants_over_time_stacked_area.pdf",
+                       filename="../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/total_laupen_variants_over_time_stacked_area.pdf",
                        viral_loads=viral_loads_2024_2025)

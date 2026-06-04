@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.ticker as ticker
 
 # Assuming data is stored as a multi-line string or loaded from a CSV file
-df = pd.read_csv('../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
+df = pd.read_csv('../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/deconvolved.csv', sep='\t')
 
 # Function to create and save a plot for each location
 def plot_by_location(df, location, filename):
@@ -96,10 +96,10 @@ def plot_by_location(df, location, filename):
     plt.savefig(filename)
 
 
-plot_by_location(df, "Genève (GE)", "../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_geneve_variants_over_time.pdf")
-plot_by_location(df, "Zürich (ZH)", "../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_zurich_variants_over_time.pdf")
-plot_by_location(df, "Laupen (BE)", "../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_laupen_variants_over_time.pdf")
-plot_by_location(df, "Chur (GR)", "../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_chur_variants_over_time.pdf")
-plot_by_location(df, "Lugano (TI)", "../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_lugano_variants_over_time.pdf")
-plot_by_location(df, "Basel (BS)", "../../RSV/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_basel_variants_over_time.pdf")
+plot_by_location(df, "Genève (GE)", "../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_geneve_variants_over_time.pdf")
+plot_by_location(df, "Zürich (ZH)", "../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_zurich_variants_over_time.pdf")
+plot_by_location(df, "Laupen (BE)", "../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_laupen_variants_over_time.pdf")
+plot_by_location(df, "Chur (GR)", "../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_chur_variants_over_time.pdf")
+plot_by_location(df, "Lugano (TI)", "../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_lugano_variants_over_time.pdf")
+plot_by_location(df, "Basel (BS)", "../../../RSV_results/data_analysis/results/RSVB_2024_2025/relative_abundances/rsvb_basel_variants_over_time.pdf")
 

@@ -7,34 +7,11 @@ import argparse
 import pysam
 import os
 """
-The script outputs tallymut.tsv file after Lofreq (VCFs) used as an imput for variants deconvolution with Lollipop. Adapted to the directory structure of regular monitoring.
-- extract_cov and process_multiple_coverage_files functions prepares a df of the total coverage for multiple samples (1-based)
-- load_convert, process_multiple_vcfs functions process multiple vcf files and make a dataframe of observed mutations x samples (frequency values)
-- create_mut_freq_dict function creates a dictionary {'A123C' : 0.67, "T140C" : 0.01, ...} to stores values of frequency from single sample
-- make_timeline_mutations_tsv function from each sample collects information into tsv file of columns ["submissionId", "primerProtocol", "reads", "date", "location", "reference", 'nucleotideMutationFrequency']
-- make_tallymut_file function prepares a tallymut.tsv file. We iterate through all samples and all signature mutations (of variants used for deconvolution)
-
-Additionally, we set frequency to 0.0 or Nan, depending on coverage (the threshold is pre-specified at the beginning):
-- if signature mutation is not called, the value of frequency stays zero if the coverage is sufficient, otherwise - missing value.
-
+The script outputs tallymut.tsv file for variants deconvolution after Lofreq (VCFs). Adapted to the directory structure of regular monitoring.
 """
-#sequencing_batches = set(pd.read_csv("samples_corrected.tsv", usecols=["batch"])
 
 COVERAGE_THRESHOLD = 10
-"""
-# Extract the coverage information from single coverage.tsv.gz file
-def extract_cov(coverage_tsv_file, sample_name, reference, input_dir_cov):
-    # read coverage.tsv file
-    coverage_file = pd.read_csv(coverage_tsv_file, sep = '\t', usecols = ['ref', 'pos', f'{sample_name}/{input_dir_cov.split("/")[-3]}'])
-    # coverage.tsv files are 1-based
-    coverage_file = coverage_file[coverage_file['ref']==reference]
-    position = pd.DataFrame(coverage_file['pos'])
-    coverage = pd.DataFrame(coverage_file[f'{sample_name}/{input_dir_cov.split("/")[-3]}']).rename(columns={f'{sample_name}/{input_dir_cov.split("/")[-3]}': 'coverage'})
-    total_coverage = pd.concat([position, coverage], axis=1) #set_index('pos')
-    total_coverage['sample'] = sample_name
 
-    return total_coverage
-"""
 def extract_cov(coverage_tsv_file, sample_name, reference):
     """
     Extract coverage for a single sample from a coverage.tsv.gz file.
@@ -61,8 +38,6 @@ def extract_cov(coverage_tsv_file, sample_name, reference):
     })
 
     return total_coverage
-
-
 
 
 def process_multiple_coverage_files(coverage_inputs, reference_genome, sequencing_batches):
@@ -204,7 +179,19 @@ def make_timeline_mutations_tsv(path_to_vcf, samples_tsv, reference, sequencing_
 
     return tsv_samples_locations
 
+"""
+def find_loc_code(location):
+    code = {
+        'Lugano': '05',
+        'Zurich': '10',
+        'Basel': '15',
+        'Geneve': '16',
+        'Chur': '17',
+        'Laupen': '25'
+    }
 
+    return code.get(location, 'Unknown')
+"""
 def correct_names(digit):
     location_ge = {
         '05': 'Lugano (TI)',
@@ -238,7 +225,7 @@ def make_tallymut_file(signatures_matrix, timeline_tsv_mutation, collected_cover
                'var',
                'frac'] + list(lineages)
 
-
+    #tallymut = pd.DataFrame(columns=columns)
     # Preprocess collected_coverage for fast lookups
     coverage_dict = collected_coverage.set_index(['sample', 'pos'])['coverage'].to_dict()
     samples_with_coverage = set(collected_coverage['sample'])
@@ -273,9 +260,15 @@ def make_tallymut_file(signatures_matrix, timeline_tsv_mutation, collected_cover
             sign_freq = 0 if sign_coverage >= COVERAGE_THRESHOLD else np.nan
 
             # if mutation is among the keys (observed in the time period of interest), and it's value is not missing (observed in the sample), take the outputted frequency value from Lofreq:
+            # only assign observed frequency if coverage passes threshold
 
-            if (sign_mut in nucleotide_mut_freq.keys()) and (nucleotide_mut_freq[sign_mut] is not None) and sign_freq is not None:
+            if (
+                sign_coverage >= COVERAGE_THRESHOLD
+                and sign_mut in nucleotide_mut_freq
+                and nucleotide_mut_freq[sign_mut] is not None
+            ):
                 sign_freq = nucleotide_mut_freq[sign_mut]
+
 
             mut_row = {'sample': row['ID'],
                        'batch': row['batch'],
@@ -297,8 +290,11 @@ def make_tallymut_file(signatures_matrix, timeline_tsv_mutation, collected_cover
 
             mutation_list.append(mut_row)
 
+
     # concatenate tallymut.tsv's from separate mutations
     tallymut = pd.DataFrame(mutation_list, columns=columns)
+
+
     return tallymut
 
 
@@ -376,7 +372,20 @@ if __name__ == '__main__':
 
 """
 python make_tallymut.py \
-  --signatures_matrix rsva/rsv_a_signatures_df_20251015.tsv \
+  --signatures_matrix rsva/rsv_a_signatures_df_20251015.csv \
+  --input_dir_vcf \
+    /cluster/project/pangolin/old_setup/not_necessary/rsv_pipeline/RSVA/working/results/*/*/variants/SNVs/snvs_annotated.vcf \
+    /cluster/project/pangolin/processes/rsv/RSVA/vpipe_output/*/20251031_2505509054/variants/SNVs/snvs_annotated.vcf \
+  --input_dir_cov \
+    /cluster/project/pangolin/old_setup/not_necessary/rsv_pipeline/RSVA/working/results/*/*/alignments/coverage.tsv.gz \
+    /cluster/project/pangolin/processes/rsv/RSVA/vpipe_output/*/20251031_2505509054/alignments/coverage.tsv.gz \
+  --samples_tsv samples_corrected_v2.tsv \
+  --reference_genome EPI_ISL_412866
+  
+  
+  
+python make_tallymut.py \
+  --signatures_matrix rsvb/rsv_b_signatures_df_20251015.csv \
   --input_dir_vcf \
     /cluster/project/pangolin/old_setup/not_necessary/rsv_pipeline/RSVB/working/results/*/*/variants/SNVs/snvs_annotated.vcf \
     /cluster/project/pangolin/processes/rsv/RSVB/vpipe_output/*/20251031_2505509054/variants/SNVs/snvs_annotated.vcf \
@@ -386,29 +395,4 @@ python make_tallymut.py \
   --samples_tsv samples_corrected_v2.tsv \
   --reference_genome EPI_ISL_1653999
 
-"""
-
-
-
-
-"""
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser(
-        description='produce tallymut.tsv file, which is used as an input for deconvolution')
-
-    parser.add_argument("signatures_matrix", help='lineages definition matrix with lineages in the rows and mutations in the columns')
-    parser.add_argument("input_dir_vcf")
-    parser.add_argument("input_dir_cov", help='path to coverage.tsv.gz')
-    parser.add_argument("samples_tsv")
-    parser.add_argument("reference_genome")
-
-    args = parser.parse_args()
-    main(args.signatures_matrix, args.input_dir_vcf, args.input_dir_cov, args.samples_tsv, args.reference_genome)
-
-
-
-
-python make_tallymut.py rsva/rsv_a_signatures_df_20250428.csv
-"/cluster/project/pangolin/rsv_pipeline/RSVA/working/results/*/*/variants/SNVs/snvs.vcf"
- "/cluster/project/pangolin/rsv_pipeline/RSVA/working/results/*/*/alignments/coverage.tsv.gz" samples_corrected.tsv EPI_ISL_412866
 """
