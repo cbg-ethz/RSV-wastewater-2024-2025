@@ -7,17 +7,20 @@ library(patchwork)
 
 
 
-load_catchments = function() {
-  # load ----
-  ara_shp = sf::read_sf("data/spatial/230214_ARA_BAG/230214_ARA_BAG.shp") %>% 
-    dplyr::select(ara_id=ara_id,geometry) %>% 
-    dplyr::filter(ara_id!="100000", ara_id!="296300")
+load_catchments = function(
+    path = "data/spatial/230214_ARA_BAG/230214_ARA_BAG.shp") {
   
+  if (!file.exists(path)) {
+    message("Catchment shapefile not found at '", path,
+            "' - skipping catchments. Request the data from the original provider.")
+    return(NULL)
+  }
   
+  ara_shp = sf::read_sf(path)
+  ara_shp = dplyr::select(ara_shp, ara_id = ara_id, geometry)
+  ara_shp = dplyr::filter(ara_shp, !ara_id %in% c("100000", "296300"))
   
   return(ara_shp)
-  
-  
 }
 
 get_plz_areas = function(file_path = 'data/spatial/plz/PLZO_SHP_LV95/PLZO_PLZ.shp', crs_required=NULL) {

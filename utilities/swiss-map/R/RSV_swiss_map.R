@@ -1,6 +1,6 @@
 library(sf)
 library(ggplot2)
-library(ggspatial)
+library()
 library(tidyverse)
 library(data.table)
 library(patchwork)
@@ -60,25 +60,41 @@ rsv_ab_assay_summary$ID <- c(270101, 390101, 664301, 66700, 515100, 26101)
 rsv_ab_assay_summary$total_population <- c(262917, 54729, 405083, 74363, 117963, 475198)
 
 
-catchments = load_catchments()
-catchments = st_transform(catchments, 25830)
-catchment_centroids = st_centroid(catchments)
+catchments <- load_catchments()          # NULL if the shapefile is missing
+have_catchments <- !is.null(catchments)
 
-plz_locs = load_plz_centroids(crs_required = 25830)
+canton_boundaries <- st_read(
+  'data/spatial/swissboundaries3d_2023-01_2056_5728.shp/swissBOUNDARIES3D_1_4_TLM_KANTONSGEBIET.shp')
 
-canton_boundaries = st_read('data/spatial/swissboundaries3d_2023-01_2056_5728.shp/swissBOUNDARIES3D_1_4_TLM_KANTONSGEBIET.shp')
+aras_to_plot <- rsv_ab_assay_summary$ID
 
-aras_to_plot = rsv_ab_assay_summary$ID 
-
-cat_locs_sites = catchment_centroids %>% filter(ara_id %in% aras_to_plot)
-
-cat_locs_sites = cat_locs_sites %>% rename(ID = ara_id) 
-
-
-cat_locs_sites_data = merge(cat_locs_sites, rsv_ab_assay_summary, by= c('ID'))
-
-catch_poly_sites = catchments %>% filter(ara_id %in% aras_to_plot) 
-
+if (have_catchments) {
+  catchments         <- st_transform(catchments, 25830)
+  catchment_centroids <- st_centroid(catchments)
+  
+  cat_locs_sites <- catchment_centroids %>%
+    filter(ara_id %in% aras_to_plot) %>%
+    rename(ID = ara_id)
+  
+  cat_locs_sites_data <- merge(cat_locs_sites, rsv_ab_assay_summary, by = "ID")
+  catch_poly_sites    <- catchments %>% filter(ara_id %in% aras_to_plot)
+  
+} else {
+  message("No catchment shapefile found: using approximate city locations for the pies and drawing no catchment outlines.")
+  
+  # approximate city coordinates (WGS84), used only as a fallback
+  fallback_sites <- data.frame(
+    location = c("Zurich", "Geneva", "Basel", "Lugano", "Laupen", "Chur"),
+    lon      = c(8.5417, 6.1432, 7.5886, 8.9511, 7.2386, 9.5320),
+    lat      = c(47.3769, 46.2044, 47.5596, 46.0037, 46.9033, 46.8499)
+  ) %>%
+    st_as_sf(coords = c("lon", "lat"), crs = 4326) %>%
+    st_transform(25830)
+  
+  cat_locs_sites_data <- dplyr::left_join(fallback_sites, rsv_ab_assay_summary,
+                                          by = "location")
+  catch_poly_sites <- NULL
+}
 
 cat_locs_sites_data$RSV_A_prop <- as.numeric(sapply(cat_locs_sites_data$RSV_A_median_prop, `[`, 1))
 cat_locs_sites_data$RSV_B_prop <- as.numeric(sapply(cat_locs_sites_data$RSV_B_median_prop, `[`, 1))
@@ -95,8 +111,8 @@ cat_locs_sites_data <- cat_locs_sites_data %>%
 # 1. TRANSFORM SPATIAL DATA TO PROJECTED CRS (meters)
 # -------------------------------
 canton_boundaries   <- st_transform(canton_boundaries, 2056)
-catch_poly_sites    <- st_transform(catch_poly_sites, 2056)
 cat_locs_sites_data <- st_transform(cat_locs_sites_data, 2056)
+if (have_catchments) catch_poly_sites <- st_transform(catch_poly_sites, 2056)
 
 # -------------------------------
 # 2. EXTRACT COORDINATES & CLEAN DATA
@@ -251,7 +267,7 @@ plot <- ggplot() +
     legend.title = element_text(size = 14)
   )
 
-ggsave('RSV_plot_cake.pdf')
+ggsave('RSV_plot_cake_approx.pdf')
 
 print(plot)
 
